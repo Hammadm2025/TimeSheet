@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Sheet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h2 class="text-center pt-3 fs-1 fw-bold text-primary">Welcome  <span class="ً welcome"></span> In Time Sheet System</h2>
+<section class="container mt-2 ">
+    <div class="row align-items-center g-4">
+ <div class="col-lg-3  ">
+   <select class="form-select col-auto" aria-label="Default select example" id="employName" >
+  <option value="" disabled selected>Employee Name</option>
+  <option value="Ahmed">Ahmed</option>
+  <option value="Mohamed">Mohamed</option>
+  <option value="Ali">Ali</option>
+  <option value="Saad">Saad</option>
+  <option value="Nirmeen">Nirmeen</option>
+  <option value="Noha">Noha</option>
+</select>
+
+</div>
+<div class=" col-lg-3">
+  <input type="text" class="form-control" id="employId" placeholder="Employee ID" readonly>
+
+</div>
+<div class=" col-lg-3">
+  <input type="text" class="form-control" id="employType" placeholder="Employee Type" readonly>
+
+</div>
+<div class=" col-lg-3">
+  <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
+  <input id="date" type="Date" class="form-control" placeholder="name@example.com">
+</div>
+<div class=" col-lg-3">
+  <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
+  <input id="day" type="text" class="form-control"  placeholder="Work Days" readonly>
+</div>
+<div class=" col-lg-3">
+  <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
+<input id="signIn" type="text" class="form-control" 
+placeholder="Sign In" onfocus="this.type='time'" onblur="if(!this.value)this.type='text'">
+</div>
+<div class=" col-lg-3">
+  <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
+   <input id="signOut" type="text" class="form-control"  
+placeholder="Sign out" onfocus="this.type='datetime-local'" onblur="if(!this.value)this.type='text'">
+</div>
+<div class=" col-lg-3">
+  <!-- <label for="exampleFormControlInput1" class="form-label">Email address</label> -->
+      <select class="form-select col-auto" aria-label="Default select example" id="vacation" >
+  <option value="" disabled selected>Vacation</option>
+  <option value="Annual leave">Annual leave</option>
+  <option value="sick leave">sick leave</option>
+  <option value="Regular leave">Regular leave</option>
+  <option value="Eid al-Fitr holiday">Eid al-Fitr holiday</option>
+  <option value="Eid al-Adha holiday">Eid al-Adha holiday</option>
+  <option value="Founding Day Holiday">Founding Day Holiday</option>
+  <option value="National Day holiday">National Day holiday</option>
+  <option value="Other">Other</option>
+</select>
+  </div>  
+  <div class="g-3 ">
+    <small id="dayHours">dayHours</small>
+    <small id="workHours">work Hours </small>
+    <small id="offer">offer time</small>
+  </div>
+  <div class=" col-lg-9">
+  <input type="text" class="form-control" id="notes" placeholder="Notes" >
+
+</div>
+
+<div class=" col-lg-3 d-grid">
+<button id="submitBtn" type="button" class="btn btn-outline-primary ">submit</button>
+
+</div>
+    </div>
+</section> 
+<section class="container">
+    <div class="row">
+        <div class="col g-3">
+ <input type="text" class="form-control" id="search" placeholder="serch">
+        </div>
+        <div class="row g-3 mt-2">
+    <div class="col-3">
+        <button onclick="getSearchMood(this.id)" id="nameSearch" class="btn btn-outline-primary w-100">Search By Name</button>
+    </div>
+    <div class="col-3">
+        <button onclick="getSearchMood(this.id)" id="titleSearch" class="btn btn-outline-primary w-100">Search By Title</button>
+    </div>
+        </div>
+    </div>
+
+</section> 
+<section>
+  <div id="totalEmployee" class="container mt-2 d-none">
+    <div class="row">
+      <div id="totalEmployeeName" class="col-lg-6">
+        <table class="w-100">
+           <tr class="g-3 text-center fs-.5">
+        <!-- <th>Object Id</th> -->
+        <th> Employee Code </th>
+        <th>Employee Name</th>
+        <th>Employee Type</th>
+        <th>Count</th>
+        <th>Over Time </th></tr>
+        <tbody id="summrayID">
+          <tr>
+
+
+          </tr>
+
+        </tbody>
+
+        </table>
+
+      </div>
+      <div id="totalEmployeeType" class="col-lg-6">
+        <table class="w-100">
+           <tr class=" text-center fs-.5">
+        <th>Gis_QC</th>
+        <th> GIS_ANALYSIS </th></tr>
+         <tr>
+          <tbody id="summrayType">
+          <tr>
+
+
+          </tr>
+        </tbody>
+
+        </table>
+
+      </div>
+    </div>
+  </div>
+</section> 
+<section>
+  <div class="container mt-3 text-center">
+    <table class="w-100">
+      <tr class="g-3 text-center fs-.5">
+        <th>Object Id</th>
+        <th> Date </th>
+        <th>Days</th>
+        <th>Start Time</th>
+        <th>End Time </th>
+        <th>hours Worked</th>
+        <th>Normal Hours</th>
+        <th>Extra Hours</th>
+        <th>Employee Code</th>
+        <th>Employee Name</th>
+        <th>Justification</th>
+        <th>Employee Type</th>
+        <th>vacation Type</th>
+        <!-- <th>Update</th> -->
+        <th>Delete</th>
+
+      </tr>
+      <tbody id="tableID">
+        <tr>
+
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</section> 
+
+<section>
+  <div class="floating-menu ">
+    <!-- <button class="float-btn main-btn">☰</button> -->
+    <div class="float-items gap-2 ">
+        <!-- <button onclick="toggleSearch()" title="Search">🔍</button> -->
+        <button onclick="toggleMonthFilter()" title="Filter by Month">📅</button>
+        <button onclick="toggleVacations()" title="Vacations">🏖️</button>
+        <button onclick="toggleShowTotal()" title="showTotal">📊</button>
+        <button onclick="exportToExcel()" title="Export Excel">📥 </button>
+
+    </div>
+    <div id="monthPanel" class="filter-panel" style="display:none">
+    <select id="monthFilter" class="form-select">
+        <option value="">All Months</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+</div>
+</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="./index.js"></script>
+</body>
+</html>
