@@ -1,3 +1,6 @@
+
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
+
 let employName = document.getElementById('employName');
 let employId = document.getElementById('employId');
 let date = document.getElementById('date');
@@ -57,6 +60,7 @@ if (localStorage.getItem('timesDate')){
 else{
     dataTime =[];
 }
+loadFromGoogleSheet();
 
 // submitBtn.addEventListener('click',function(){
 //     // calculateHours();
@@ -178,13 +182,15 @@ submitBtn.addEventListener('click', function() {
         // syncToGoogleSheet(daysData); ❌ امسح السطر ده نهائياً لأنه المتسبب في الإضافة المزدوجة
         
         clearInput();
-        rifreshView();
+        // rifreshView();
+
         document.querySelector('.welcome').innerHTML = '';
     } else {
         alert(`Please Choose correct`);
     }
 })
-showData();
+// showData();
+loadFromGoogleSheet();
 
 function clearInput(){
     employName.value='';
@@ -820,106 +826,17 @@ function getTypeArray(data){
     console.log(exportFormatted);
 }
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
+document.querySelector('.main-btn').addEventListener('click', function(){
+    document.querySelector('.float-items').classList.toggle('show');
+});
 
-function syncToGoogleSheet(data, action) {
-  fetch(SHEET_URL, {
-    method: 'POST',
-    body: JSON.stringify({ action: action, ...data })
-  }).then(() => {
-    syncSummaryToSheet(); // ✅ بعد كل create/update ابعت الـ summary
-  });
-}
 
-function syncSummaryToSheet() {
-  let summaryData = getSummaryArray(dataTime);
-  let typeData = getTypeArray(dataTime)[0];
-
-  fetch(SHEET_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'updateSummary',
-      summary: summaryData,
-      typeData: typeData
-    })
-  });
-}
-// وظيفة حذف السطر من جوجل شيت
-function deleteFromGoogleSheet(id) {
-    fetch(SHEET_URL, {
-        method: 'POST',
-        // بنبعت الأكشن "delete" والـ ID اللي عايزين نمسحه
-        body: JSON.stringify({ 
-            action: 'delete', 
-            id: id 
-        })
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log("Response from Script:", data);
-        // بعد ما يتم الحذف بنجاح، بنحدث الملخص (Summary) عشان الأرقام تظبط
-        syncSummaryToSheet(); 
-    })
-    .catch(error => {
-        console.error('Error while deleting:', error);
-        alert('حدث خطأ أثناء الحذف من جوجل شيت');
-    });
-}
-
-// const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzHUAfL1gIO9K1c-40lRAZ6DpfmoY-VnqO1L-u7JfWy1Ey7bdoLjZmPLUpx6TkL-l-8/exec';
-
-function syncToGoogleSheet(data, action) {
-  fetch(SHEET_URL, {
-    method: 'POST',
-    body: JSON.stringify({ action: action, ...data })
-  }).then(() => {
-    syncSummaryToSheet(); // ✅ بعد كل create/update ابعت الـ summary
-  });
-}
-
-function syncSummaryToSheet() {
-  let summaryData = getSummaryArray(dataTime);
-  let typeData = getTypeArray(dataTime)[0];
-
-  fetch(SHEET_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'updateSummary',
-      summary: summaryData,
-      typeData: typeData
-    })
-  });
-}
-// وظيفة حذف السطر من جوجل شيت
-function deleteFromGoogleSheet(id) {
-    fetch(SHEET_URL, {
-        method: 'POST',
-        // بنبعت الأكشن "delete" والـ ID اللي عايزين نمسحه
-        body: JSON.stringify({ 
-            action: 'delete', 
-            id: id 
-        })
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log("Response from Script:", data);
-        // بعد ما يتم الحذف بنجاح، بنحدث الملخص (Summary) عشان الأرقام تظبط
-        syncSummaryToSheet(); 
-    })
-    .catch(error => {
-        console.error('Error while deleting:', error);
-        alert('حدث خطأ أثناء الحذف من جوجل شيت');
-    });
-}
+// const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
 
 function loadFromGoogleSheet(){
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = "Loading Data...";
-    fetch('https://script.google.com/macros/s/AKfycbzHUAfL1gIO9K1c-40lRAZ6DpfmoY-VnqO1L-u7JfWy1Ey7bdoLjZmPLUpx6TkL-l-8/exec')
+    fetch(SHEET_URL)
         .then(res => res.json())
         .then(data => {
-            // الداتا بتيجي كـ array of arrays
-            // بنحول كل row لـ object
             dataTime = data.slice(14).filter(row => row[0] !== '').map(row => ({
                 id: row[0],
                 date: row[1],
@@ -937,19 +854,22 @@ function loadFromGoogleSheet(){
             }));
             localStorage.setItem('timesDate', JSON.stringify(dataTime));
             showData();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = "Submit";
         })
-        .catch(err => {
-            console.log('Error loading, using local data');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = "Submit";
-            console.log('Loading from localStorage');
-            showData();
-        });
+        .catch(() => showData());
 }
 
-//  buttons toggel
-document.querySelector('.main-btn').addEventListener('click', function(){
-    document.querySelector('.float-items').classList.toggle('show');
-});
+function syncToGoogleSheet(data, action){
+    fetch(SHEET_URL, {
+        method: 'POST',
+        body: JSON.stringify({action: action, ...data})
+    }).then(() => loadFromGoogleSheet()); // ✅ بيرجع يجيب الداتا بعد الإضافة
+}
+
+function deleteFromGoogleSheet(id){
+    fetch(SHEET_URL, {
+        method: 'POST',
+        body: JSON.stringify({action: 'delete', id: id})
+    }).then(() => loadFromGoogleSheet()); // ✅ بيرجع يجيب الداتا بعد الحذف
+}
+
+
