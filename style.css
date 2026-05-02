@@ -51,12 +51,13 @@ th, td {
 }
 .float-items{
  display: none;
-    flex-direction: column;
+    
     gap: 10px;
    
 }
 .float-items.show {
     display: flex;
+    flex-direction: column;
 }
 .filter-panel {
     position: fixed;
