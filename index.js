@@ -203,10 +203,16 @@ submitBtn.addEventListener('click', function() {
         
         if (mood === 'create') {
             // هنا الفحص: dataTime الآن تحتوي على بيانات الـ Google Sheets والـ LocalStorage معاً
-            let isDuplicate = dataTime.some(item =>
-                item.employName === employName.value &&
-                item.date === date.value
-            );
+            let isDuplicate = dataTime.some(item =>{
+                // item.employName === employName.value &&
+                // item.date === date.value;
+             let existingDate = String(item.date).trim();
+        let newDate = String(date.value).trim();
+        let existingName = String(item.employName).trim();
+        let newName = String(employName.value).trim();
+
+        return existingName === newName && existingDate === newDate;
+        });
 
             if (isDuplicate) {
                 alert('عفواً، هذا الموظف مسجل بالفعل في هذا التاريخ (مسجل من متصفح أو جهاز آخر)');
@@ -917,6 +923,8 @@ function deleteFromGoogleSheet(id) {
 }
 
 function loadFromGoogleSheet(){
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Loading Data...";
     fetch('https://script.google.com/macros/s/AKfycbzHUAfL1gIO9K1c-40lRAZ6DpfmoY-VnqO1L-u7JfWy1Ey7bdoLjZmPLUpx6TkL-l-8/exec')
         .then(res => res.json())
         .then(data => {
@@ -939,8 +947,13 @@ function loadFromGoogleSheet(){
             }));
             localStorage.setItem('timesDate', JSON.stringify(dataTime));
             showData();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Submit";
         })
         .catch(err => {
+            console.log('Error loading, using local data');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Submit";
             console.log('Loading from localStorage');
             showData();
         });
