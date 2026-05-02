@@ -866,3 +866,8 @@ function deleteFromGoogleSheet(id) {
         alert('حدث خطأ أثناء الحذف من جوجل شيت');
     });
 }
+
+
+document.querySelector('.main-btn').addEventListener('click', function(){
+    document.querySelector('.float-items').classList.toggle('show');
+});
