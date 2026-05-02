@@ -134,56 +134,104 @@ else{
  
     
 // })
+// submitBtn.addEventListener('click', function() {
+//     let daysData = {
+//         // id: mood === 'create' ? Date.now() : dataTime[tmp].id, // استخدم Date.now() لضمان ID فريد
+//         id: mood === 'create' ? (dataTime.length > 0 ? dataTime[dataTime.length - 1].id + 1 : 1) : dataTime[tmp].id,
+//         date: date.value,
+//         day: day.value,
+//         employName: employName.value,
+//         signIn: signIn.value,
+//         signOut: signOut.value,
+//         workHours: workedDay,
+//         dayHours: diff,
+//         offer: offerTime,
+//         employId: employId.value,
+//         notes: notes.value,
+//         employType: employType.value,
+//         vacation: signIn.value !== '' && signOut.value !== '' ? '' : vacation.value,
+//     }
+
+//     if (employName.value !== '' && date.value !== '' && (signIn.value !== '' || vacation.value !== '')) {
+//         if (mood === 'create') {
+//             let isDuplicate = dataTime.some(item =>
+//                 item.employName === employName.value &&
+//                 item.date === date.value
+//             );
+
+//             if (isDuplicate) {
+//                 alert('This employee already has a record for this date!');
+//                 return;
+//             }
+//             dataTime.push(daysData);
+//             syncToGoogleSheet(daysData, 'create'); // ✅ نداء واحد هنا للإضافة
+//         } else {
+//             dataTime[tmp] = daysData;
+//             syncToGoogleSheet(daysData, 'update'); // ✅ نداء واحد هنا للتعديل
+//             mood = 'create';
+//             submitBtn.innerHTML = 'Submit';
+//         }
+
+//         dataTime.sort((a, b) => new Date(a.date) - new Date(b.date));
+//         localStorage.setItem('timesDate', JSON.stringify(dataTime));
+        
+//         // syncToGoogleSheet(daysData); ❌ امسح السطر ده نهائياً لأنه المتسبب في الإضافة المزدوجة
+        
+//         clearInput();
+//         rifreshView();
+//         document.querySelector('.welcome').innerHTML = '';
+//     } else {
+//         alert(`Please Choose correct`);
+//     }
+// })
 submitBtn.addEventListener('click', function() {
+    // 1. التأكد أن البيانات تم تحميلها من السيرفر أولاً
+    if (dataTime.length === 0 && localStorage.getItem('timesDate') === null) {
+        alert("Wait a second, loading data from server...");
+        return; 
+    }
+
     let daysData = {
-        // id: mood === 'create' ? Date.now() : dataTime[tmp].id, // استخدم Date.now() لضمان ID فريد
         id: mood === 'create' ? (dataTime.length > 0 ? dataTime[dataTime.length - 1].id + 1 : 1) : dataTime[tmp].id,
         date: date.value,
-        day: day.value,
+        // باقي الحقول كما هي...
         employName: employName.value,
-        signIn: signIn.value,
-        signOut: signOut.value,
-        workHours: workedDay,
-        dayHours: diff,
-        offer: offerTime,
-        employId: employId.value,
-        notes: notes.value,
-        employType: employType.value,
-        vacation: signIn.value !== '' && signOut.value !== '' ? '' : vacation.value,
+        // ...
     }
 
     if (employName.value !== '' && date.value !== '' && (signIn.value !== '' || vacation.value !== '')) {
+        
         if (mood === 'create') {
+            // هنا الفحص: dataTime الآن تحتوي على بيانات الـ Google Sheets والـ LocalStorage معاً
             let isDuplicate = dataTime.some(item =>
                 item.employName === employName.value &&
                 item.date === date.value
             );
 
             if (isDuplicate) {
-                alert('This employee already has a record for this date!');
+                alert('عفواً، هذا الموظف مسجل بالفعل في هذا التاريخ (مسجل من متصفح أو جهاز آخر)');
                 return;
             }
+            
             dataTime.push(daysData);
-            syncToGoogleSheet(daysData, 'create'); // ✅ نداء واحد هنا للإضافة
+            syncToGoogleSheet(daysData, 'create'); 
         } else {
+            // كود الـ Update
             dataTime[tmp] = daysData;
-            syncToGoogleSheet(daysData, 'update'); // ✅ نداء واحد هنا للتعديل
+            syncToGoogleSheet(daysData, 'update');
             mood = 'create';
             submitBtn.innerHTML = 'Submit';
         }
 
+        // حفظ وتحديث العرض
         dataTime.sort((a, b) => new Date(a.date) - new Date(b.date));
         localStorage.setItem('timesDate', JSON.stringify(dataTime));
-        
-        // syncToGoogleSheet(daysData); ❌ امسح السطر ده نهائياً لأنه المتسبب في الإضافة المزدوجة
-        
         clearInput();
         rifreshView();
-        document.querySelector('.welcome').innerHTML = '';
     } else {
         alert(`Please Choose correct`);
     }
-})
+});
 loadFromGoogleSheet();
 showData();
 
