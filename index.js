@@ -184,6 +184,7 @@ submitBtn.addEventListener('click', function() {
         alert(`Please Choose correct`);
     }
 })
+loadFromGoogleSheet();
 showData();
 
 function clearInput(){
@@ -821,7 +822,7 @@ function getTypeArray(data){
     console.log(exportFormatted);
 }
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzHUAfL1gIO9K1c-40lRAZ6DpfmoY-VnqO1L-u7JfWy1Ey7bdoLjZmPLUpx6TkL-l-8/exec';
 
 function syncToGoogleSheet(data, action) {
   fetch(SHEET_URL, {
@@ -867,7 +868,37 @@ function deleteFromGoogleSheet(id) {
     });
 }
 
+function loadFromGoogleSheet(){
+    fetch('https://script.google.com/macros/s/AKfycbzHUAfL1gIO9K1c-40lRAZ6DpfmoY-VnqO1L-u7JfWy1Ey7bdoLjZmPLUpx6TkL-l-8/exec')
+        .then(res => res.json())
+        .then(data => {
+            // الداتا بتيجي كـ array of arrays
+            // بنحول كل row لـ object
+            dataTime = data.slice(14).filter(row => row[0] !== '').map(row => ({
+                id: row[0],
+                date: row[1],
+                day: row[2],
+                signIn: row[3],
+                signOut: row[4],
+                dayHours: row[5],
+                workHours: row[6],
+                offer: row[7],
+                employId: row[8],
+                employName: row[9],
+                notes: row[10],
+                employType: row[11],
+                vacation: row[12]
+            }));
+            localStorage.setItem('timesDate', JSON.stringify(dataTime));
+            showData();
+        })
+        .catch(err => {
+            console.log('Loading from localStorage');
+            showData();
+        });
+}
 
+//  buttons toggel
 document.querySelector('.main-btn').addEventListener('click', function(){
     document.querySelector('.float-items').classList.toggle('show');
 });
