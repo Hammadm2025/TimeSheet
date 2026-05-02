@@ -515,10 +515,11 @@ console.log(id);
          <td>${dataTime[i].notes}</td>
          <td>${dataTime[i].employType}</td>
          <td>${dataTime[i].vacation}</td>
-          <td><button class="btn btn-outline-danger w-100" onClick=updateData(${i}) id="update">Update</button></td>
                     <td> <button class="btn btn-outline-warning w-100" onClick=deleteItem(${i}) id="delete">Delete</button></td>
         </tr>
             `
+                    //   <td><button class="btn btn-outline-danger w-100" onClick=updateData(${i}) id="update">Update</button></td>
+
         }
         else{
       
