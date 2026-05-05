@@ -1,5 +1,5 @@
 
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
+let SHEET_URL = 'https://script.google.com/macros/s/AKfycbzwRCnRgYa4VWas23g5n5V1MHEIoEDqQKr2igTjCuBzGL8bTXUImagg8It7o5Cgbxkn/exec';
 
 let employName = document.getElementById('employName');
 let employId = document.getElementById('employId');
@@ -831,7 +831,7 @@ document.querySelector('.main-btn').addEventListener('click', function(){
 });
 
 
-// const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
+// var SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6BmLXLmsjMEJnAcP27mOP3e49eciUiC83FTG63q3QDDIkAuh_iMIolgwOj7faQW1c/exec';
 
 function loadFromGoogleSheet(){
     fetch(SHEET_URL)
@@ -858,11 +858,25 @@ function loadFromGoogleSheet(){
         .catch(() => showData());
 }
 
+// ❌ شيل دي
+
+// ✅ وحط دي بدلها
 function syncToGoogleSheet(data, action){
     fetch(SHEET_URL, {
         method: 'POST',
         body: JSON.stringify({action: action, ...data})
-    }).then(() => loadFromGoogleSheet()); // ✅ بيرجع يجيب الداتا بعد الإضافة
+    }).then(() => {
+        let summaryData = getSummaryArray(dataTime);
+        let typeData = getTypeArray(dataTime)[0];
+        return fetch(SHEET_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'updateSummary',
+                summary: summaryData,
+                typeData: typeData
+            })
+        });
+    }).then(() => loadFromGoogleSheet());
 }
 
 function deleteFromGoogleSheet(id){
@@ -873,3 +887,7 @@ function deleteFromGoogleSheet(id){
 }
 
 
+
+
+// 
+setInterval(loadFromGoogleSheet, 30000);
